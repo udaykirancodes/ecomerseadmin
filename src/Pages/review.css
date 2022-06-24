@@ -1,0 +1,32 @@
+.review{
+    display: flex;
+    margin-top: 3%;
+}
+th, td{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+table{
+    border: 1px solid rgb(231, 225, 225);
+    width: 100%;
+}
+.review_head{
+    margin-left: 20px;
+    margin-right: 75%;
+}
+tr {
+    border-bottom: 1px solid #ddd;
+  }
+  @media (max-width: 800px) {
+    .review {
+        flex-wrap: wrap;
+      flex-direction: column;
+
+    }
+    .review_head{
+        width: 90%;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}

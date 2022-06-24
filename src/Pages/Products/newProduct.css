@@ -1,0 +1,8 @@
+.newProduct{
+    margin-top: 4%;
+}
+@media (max-width: 800px) {
+    .newProduct{
+        margin-top: 24%;
+    }
+}

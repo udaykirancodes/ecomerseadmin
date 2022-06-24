@@ -1,0 +1,9 @@
+.add_Blog{
+    margin-top: 2%;
+}
+@media (max-width: 800px) {
+    .add_Blog{
+        margin-top: 24%;
+        width: 80%;
+    }
+}

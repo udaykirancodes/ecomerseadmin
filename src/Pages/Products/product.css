@@ -1,0 +1,38 @@
+.product_head{
+    display: flex;
+    flex-flow: row;
+}
+.product{
+    margin-top: 3%;
+}
+.newBtn{
+    float: right;
+    margin-right: 20px;
+}
+.product_form{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.product_info{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+th, td{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+table{
+    border: 1px solid rgb(231, 225, 225);
+    width: 100%;
+}
+tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+@media (max-width: 800px) {
+    .product {
+        margin-top: 20%;
+    }
+}

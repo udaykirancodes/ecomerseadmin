@@ -1,0 +1,33 @@
+.subscriber{
+    display: flex;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+th, td{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+table{
+    border: 1px solid rgb(231, 225, 225);
+    width: 100%;
+}
+.subscriber_head{
+    margin-left: 20px;
+    margin-right: 73%;
+}
+tr {
+    border-bottom: 1px solid #ddd;
+  }
+  @media (max-width: 800px) {
+    .subscriber {
+        flex-wrap: wrap;
+      flex-direction: column;
+
+    }
+    .subscriber_head{
+        width: 90%;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}

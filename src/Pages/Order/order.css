@@ -1,0 +1,28 @@
+.order{
+    display: flex;
+    margin-top: 3%;
+}
+th, td{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+table{
+    border: 1px solid rgb(231, 225, 225);
+    width: 100%;
+}
+tr {
+    border-bottom: 1px solid #ddd;
+  }
+  @media (max-width: 800px) {
+    .order {
+        flex-wrap: wrap;
+      flex-direction: column;
+
+    }
+    .order_head{
+        margin-bottom: 20px;
+        margin-left: 20px;
+        margin-right: 2opx;
+    }
+}

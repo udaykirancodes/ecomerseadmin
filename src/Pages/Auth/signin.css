@@ -1,0 +1,11 @@
+.signin{
+    width: 20%;
+}
+
+@media (max-width: 800px) {
+    .signin{
+        width: 80%;
+        
+    }
+
+}

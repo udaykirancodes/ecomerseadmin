@@ -1,0 +1,40 @@
+.brand{
+    display: flex;
+    margin-top: 3%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.brand_table{
+    width:100%;
+    
+    border: 1px solid whitesmoke;
+    padding: 10px 10px;
+    margin-right: 10px;
+}
+.brand_head_search{
+    width: 60%;
+    margin-bottom: 20px;
+    margin-left: 73%;
+}
+.add_brand{
+    border: 1px solid whitesmoke;
+    padding: 10px 10px;
+}
+@media (max-width: 800px) {
+    .brand {
+        display: flex;
+        flex-direction: column;
+        margin-top: 24%;
+    }
+    .brand_head_search{
+        margin-left: 5%;
+        margin-right: 5%;
+        width: 100%;
+    }
+    .brand_table{
+        margin-bottom: 20%;
+    }
+    .brand_head{
+        display: none;
+    }
+}
