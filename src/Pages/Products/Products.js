@@ -416,7 +416,7 @@ const Products = (props) => {
                     </table>
                 </div>
             </div>
-            <Pagination currentproducts={products.length/perPage} setcurrentpage={setcurrentpage}   /> 
+            <Pagination currentproducts={products.length/perPage} currentpage={currentpage} setcurrentpage={setcurrentpage}   /> 
         </>
     )
 }

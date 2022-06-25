@@ -11,8 +11,12 @@ table{
     border: 1px solid rgb(231, 225, 225);
     width: 100%;
 }
+.verysmall{
+    font-size: 10px;
+}
 tr {
     border-bottom: 1px solid #ddd;
+    font-size: 14px;
   }
   @media (max-width: 800px) {
     .order {

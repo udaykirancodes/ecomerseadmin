@@ -72,7 +72,7 @@ const Sell = ({showAlert}) => {
           </table>
         </div>
 
-        <Pagination currentproducts={sell.length/perPage} setcurrentpage={setcurrentpage}   />
+        <Pagination currentproducts={sell.length/perPage} currentpage={currentpage} setcurrentpage={setcurrentpage}   />
     
       </div>
     </>

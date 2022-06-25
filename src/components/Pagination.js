@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Pagination({ currentproducts  , setcurrentpage}) {
+function Pagination({ currentproducts , currentpage , setcurrentpage}) {
 
   const data = []; 
 
@@ -13,9 +13,10 @@ function Pagination({ currentproducts  , setcurrentpage}) {
         <div className="container mt-4">
           <ul className="pagination justify-content-center">
               {
-                data.map((page)=>{
+                data.map((page,index)=>{
+
                   return <li className="page-item" key={page} onClick={()=>setcurrentpage(page+1)} >
-                    <a className="page-link">
+                    <a className="page-link" style={{backgroundColor:currentpage-1===index? 'dodgerblue' : '',color:currentpage-1===index?'white':''}}  >
                        {page+1}
                     </a>
                   </li>

@@ -74,7 +74,7 @@ const Sell = ({showAlert}) => {
           </table>
         </div>
 
-        <Pagination currentproducts={scrap.length/perPage} setcurrentpage={setcurrentpage}   />
+        <Pagination currentproducts={scrap.length/perPage} currentpage={currentpage} setcurrentpage={setcurrentpage}   />
     
       </div>
     </>

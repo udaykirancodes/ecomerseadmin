@@ -2,7 +2,7 @@ import React, { useState , useEffect } from "react";
 
 import Context from "./Context";
 
-import { AllBlgos, GetAllProducts , AllSellUrl , AllUsers , AllOrdersUrl , AllScrapUrl} from "../urls";
+import { AllBlgos, GetAllProducts , AllSellUrl , AllUsers , AllOrdersUrl , AllScrapUrl } from "../urls";
 
 const GlobalState = (props)=>{
 
@@ -19,11 +19,12 @@ const GlobalState = (props)=>{
 
     // get all users list 
     const getAllUsers = async ()=>{
+        let token =  localStorage.getItem('adminToken'); 
         fetch(AllUsers , {
             method:"GET",
             headers: {
                 'Content-Type':'application/json',
-                'adminToken':adminToken 
+                'adminToken':token 
             }
         })
         .then((res)=> res.json())
@@ -31,6 +32,8 @@ const GlobalState = (props)=>{
             if(data.success === true){
                 setusers(data.users);
                 console.log('got users'); 
+                
+                // extract subcribers from users 
                 let sub = data.users.filter((user)=>{if(user.emailVerified){return user}}) ; 
                 setsubscribers(sub); 
             }
@@ -38,11 +41,12 @@ const GlobalState = (props)=>{
     }
     // get all Orders list 
     const getAllOrders = async ()=>{
+        let token =  localStorage.getItem('adminToken'); 
         fetch(AllOrdersUrl , {
             method:"GET",
             headers: {
                 'Content-Type':'application/json',
-                'adminToken':adminToken 
+                'adminToken':token 
             }
         })
         .then((res)=> res.json())
@@ -56,11 +60,12 @@ const GlobalState = (props)=>{
 
     // get all blogs 
     const getAllBlogs = ()=>{
+        let token = localStorage.getItem('adminToken'); 
         fetch(AllBlgos , {
             method:"GET",
             headers: {
                 'Content-Type':'application/json',
-                'adminToken':adminToken 
+                'adminToken':token  
             }
         })
         .then((res)=> res.json())
@@ -78,11 +83,12 @@ const GlobalState = (props)=>{
 
     // get all the products 
     const getAllProducts = ()=>{
+        let token =  localStorage.getItem('adminToken'); 
         fetch( GetAllProducts , {
             method:"GET",
             headers:{
                 'Content-Type':'application/json' ,
-                'adminToken':adminToken                 
+                'adminToken':token                 
             }
         })
         .then((res)=>res.json())
@@ -99,11 +105,12 @@ const GlobalState = (props)=>{
     }
     // get all the sells 
     const getAllSell = ()=>{
+        let token =  localStorage.getItem('adminToken'); 
         fetch( AllSellUrl , {
             method:"GET",
             headers:{
                 'Content-Type':'application/json' ,
-                'adminToken':adminToken               
+                'adminToken':token                
             }
         })
         .then((res)=>res.json())
@@ -113,27 +120,28 @@ const GlobalState = (props)=>{
                 console.log('got sell'); 
             }
             else{
-                console.log('error in getting all products'); 
+                console.log('error in getting sell'); 
             }
         })
     }
     // get all the scrap  
     const getAllScrap = ()=>{
+        let token =  localStorage.getItem('adminToken'); 
         fetch( AllScrapUrl , {
             method:"GET",
             headers:{
                 'Content-Type':'application/json' ,
-                'adminToken':adminToken               
+                'adminToken':token                
             }
         })
         .then((res)=>res.json())
         .then(data => {
             if(data.success){
                 setscrap(data.pagination.results); 
-                console.log('got sell'); 
+                console.log('got scrap'); 
             }
             else{
-                console.log('error in getting all products'); 
+                console.log('error to get scrap'); 
             }
         })
     }
@@ -150,11 +158,12 @@ const GlobalState = (props)=>{
         getAllOrders(); 
         getAllSell(); 
         getAllScrap(); 
-    }, [adminToken])
+        getAllOrders(); 
+    }, [])
     
 
     return (
-        <Context.Provider value={{users , setusers , blogs , setblogs , subscribers , setsubscribers , products , setproducts , getAllProducts , sell , scrap ,  orders, adminToken , setadminToken}}>
+        <Context.Provider value={{users , setusers , blogs , setblogs , subscribers , setsubscribers  , setorders , products , setproducts , getAllProducts , sell , scrap ,  orders, adminToken , setadminToken}}>
             {props.children}
         </Context.Provider>
     )

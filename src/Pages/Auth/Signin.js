@@ -33,7 +33,7 @@ const Signin = ({showAlert}) => {
             if(data.success === true){
                 let adminToken = data.adminToken; 
                 localStorage.setItem('adminToken',adminToken); 
-                setadminToken(data.adminToken); 
+                // setadminToken(data.adminToken); 
                 navigate('/')
             }
             else{
