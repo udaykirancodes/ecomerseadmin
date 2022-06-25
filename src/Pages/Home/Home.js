@@ -1,29 +1,41 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Context from '../../context/Context';
+import { AllBlgos } from '../../urls';
 import './home.css'
 
 const Home = ({showAlert}) => {
     const navigate = useNavigate(); 
+    const [pending , setpending] = useState([]); 
 
-    const {users , products} = useContext(Context); 
+    const {users , products , orders , blogs } = useContext(Context); 
 
     useEffect(()=>{
         let adminToken = localStorage.getItem('adminToken'); 
         if(!adminToken){
             navigate('/login'); 
         }
-        showAlert('Hey! Welcome to METAL STATION','success')
-      },[])
-      const center = {
+        showAlert('Hey! Welcome to METAL STATION','success'); 
+
+        let len =  orders.filter((order)=>{
+            if(order.status=='pending'){
+                return order 
+            }
+        })
+        setpending(len)
+
+    },[])
+
+    const center = {
         display:'flex',
         alignItems:'center',
         justifyContent:'center'
-      }
+    }
+    
        
     return (
         <>
-            {/* <div className='container'> */}
+            <div className='container'>
             <div className="home my-4" style={{paddingTop:'5%'}} >
                 <div className="home_content" >
                     <div className="home_inside">
@@ -40,18 +52,19 @@ const Home = ({showAlert}) => {
                 <div className="home_content" >
                     <div className="home_inside">
                         <h6>Total Orders</h6>
-                        <h2>0</h2>
+                        <h2>{orders.length}</h2>
                     </div>
                 </div>
                 <div className="home_content" >
                     <div className="home_inside">
                         <h6>Pending Orders</h6>
-                        <h2>0</h2>
+                        <h2>{pending.length}</h2>
                     </div>
                 </div>
                 <div className="home_content" >
                     <div className="home_inside">
-                        <h6>Order Status</h6>
+                        <h6>All Blogs</h6>
+                        <h2>{blogs.length}</h2>
                     </div>
                 </div>
             </div>
@@ -82,10 +95,7 @@ const Home = ({showAlert}) => {
                     </div>
                 </div>
             </div>
-            <h2 style={{ marginTop: '20px', marginLeft: '20px' }}>Other Information</h2>
-            <hr />
-
-            {/* </div> */}
+            </div>
         </>
     )
 }
