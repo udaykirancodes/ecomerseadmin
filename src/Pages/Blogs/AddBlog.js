@@ -1,11 +1,16 @@
-import React, { useState , useEffect} from 'react'
+import React, { useState , useEffect, useContext} from 'react'
 import './addblog.css'
 import {AddBlogUrl} from '../../urls'; 
 import { useNavigate } from 'react-router-dom'
+
+import Context from "../../context/Context"
+
 const AddBlog = (props) => {
     const navigate = useNavigate(); 
 
     const {showAlert} = props ; 
+
+    const {blogs, setblogs} = useContext(Context)
 
     useEffect(()=>{
         showAlert('Write a crazy Blog that will blow the customer\'s mind','success');
@@ -48,8 +53,11 @@ const AddBlog = (props) => {
         .then((data)=>{
             console.log(data); 
             if(data.success === true){
-                setblog(null); 
+                setblogs(blogs.concat(data.blog));
                 showAlert("Blog Added Successfully ","success"); 
+                navigate('/blog'); 
+                setblog({title:'',description:'',img:''}); 
+                
             }
             else{
                 showAlert(data.msg , "danger"); 

@@ -121,7 +121,6 @@ const Newproduct = (props) => {
         .then((res)=> res.json())
         .then((data)=>{
             if(data.success === true){
-                console.log(data); 
                 setInput({}); 
                 navigate('/product'); 
                 showAlert("Product Added Successfully ","success"); 
