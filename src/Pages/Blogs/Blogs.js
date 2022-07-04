@@ -260,7 +260,7 @@ const Blogs = (props) => {
                                 <tr>
                                     <th>#</th>
                                     <th>Title</th>
-                                    <th className='description'>Description</th>
+                                    <th className='description'>Tags</th>
                                     <th className='image'>Image</th>
                                     <th>Status</th>
                                     <th>Option</th>
@@ -269,12 +269,14 @@ const Blogs = (props) => {
                                     search ? blogs.map((element,index)=>{
                                         // if there is any search filter 
                                         element.title = element.title.toLowerCase()
-                                        if (element.title.includes(search.toLocaleLowerCase())) {
+                                        if (element.title.includes(search.toLocaleLowerCase()) || element.category.includes(search) ) {
                                             return <tbody key={index}>
                                                     <tr>
                                                         <td>{index+1}</td>
                                                         <td>{element.title}</td>
-                                                        <td className='description'>{element.description}</td>
+                                                        <td className='description'>{element.category.map(c => {
+                                                            return c+', '
+                                                        })}</td>
                                                         <td className='image'> <img style={{height:'80px',width:'150px',borderRadius:'10px'}} src={backendurl+element.img} alt="Blog Image" ></img> </td>
                                                         <td>{element.isDeleted ? "Deleted" : "Active"}</td>
                                                         <td>
@@ -291,26 +293,27 @@ const Blogs = (props) => {
                                     })
                                     :
                                     // for no search filter 
-
-                                        blogs.map((element , index)=>{
-                                            return <tbody key={index}>
-                                            <tr>
-                                                <td>{index+1}</td>
-                                                <td>{element.title}</td>
-                                                <td className='description'>{element.description}</td>
-                                                <td className='image'> <img style={{height:'80px',width:'150px',borderRadius:'10px'}} src={backendurl+element.img} alt="Blog Image" ></img> </td>
-                                                <td>{element.isDeleted ? "Deleted" : "Active"}</td>
-                                                <td>
-                                                    <i className="fa-solid fa-trash mx-2" role='button' onClick={()=>{setId(element._id)}} data-bs-toggle="modal" data-bs-target="#staticBackdrop">D</i> 
-                                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{ setId(element._id)}}>E</i>
-                                                    {
-                                                        element.isDeleted && 
-                                                        <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={()=>{ setId(element._id)}}>U</i>
-                                                    }
-                                                </td>
-                                                </tr>
-                                        </tbody>
-                                        }
+                                    blogs.map((element , index)=>{
+                                        return <tbody key={index}>
+                                        <tr>
+                                            <td>{index+1}</td>
+                                            <td>{element.title}</td>
+                                            <td className='description'>{element.category.map(c => {
+                                                return c+', '
+                                            })}</td>
+                                            <td className='image'> <img style={{height:'80px',width:'150px',borderRadius:'10px'}} src={backendurl+element.img} alt="Blog Image" ></img> </td>
+                                            <td>{element.isDeleted ? "Deleted" : "Active"}</td>
+                                            <td>
+                                                <i className="fa-solid fa-trash mx-2" role='button' onClick={()=>{setId(element._id)}} data-bs-toggle="modal" data-bs-target="#staticBackdrop">D</i> 
+                                                <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{ setId(element._id)}}>E</i>
+                                                {
+                                                    element.isDeleted && 
+                                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={()=>{ setId(element._id)}}>U</i>
+                                                }
+                                            </td>
+                                            </tr>
+                                    </tbody>
+                                    }
                                     )
                                 }
                             </table>

@@ -1,9 +1,10 @@
 import React, { useState , useEffect, useContext} from 'react'
 import './addblog.css'
-import {AddBlogUrl} from '../../urls'; 
+import {AddBlogUrl , BlogCategories} from '../../urls'; 
 import { useNavigate } from 'react-router-dom'
 
 import Context from "../../context/Context"
+import TagsInput from '../../components/TagsInput';
 
 const AddBlog = (props) => {
     const navigate = useNavigate(); 
@@ -12,9 +13,7 @@ const AddBlog = (props) => {
 
     const {blogs, setblogs} = useContext(Context)
 
-    useEffect(()=>{
-        showAlert('Write a crazy Blog that will blow the customer\'s mind','success');
-    },[])
+   
 
     const [blog , setblog ] = useState({
         title:'',
@@ -37,6 +36,7 @@ const AddBlog = (props) => {
         formdata.append('title',blog.title)
         formdata.append('description',blog.description); 
         formdata.append('image',selectedImage); 
+        formdata.append('category',selected); 
         let adminToken = localStorage.getItem('adminToken'); 
         if(!adminToken){
             navigate('/login'); 
@@ -65,7 +65,39 @@ const AddBlog = (props) => {
         })
     }
 
-    
+    // pull the categories 
+
+    const [categories , setCategories ] = useState([]); 
+
+    const [selected , setselected ] = useState([]);  
+
+    useEffect(()=>{
+        showAlert('Fetching Categories','success');
+        fetch(BlogCategories , {
+            method:"GET",
+            headers: {
+                'Content-Type':'application/json',
+            }
+        })
+        .then((res)=> res.json())
+        .then((data)=>{
+            if(data.success === true){
+                let cats = data.data ; 
+                setCategories(cats)
+                console.log(categories); 
+                showAlert('Fetching Compleated','success');
+            }
+            else{
+                showAlert(data.msg,'danger'); 
+            }
+        })
+    },[])
+
+    const addToSelected = (index)=>{
+        let s = [...selected]; 
+        s.push(categories[index]); 
+        setselected(s); 
+    }
     
 
     return (
@@ -97,8 +129,24 @@ const AddBlog = (props) => {
                     <input type="text" name='title' onChange={(e)=>handleInput(e)} className="form-control" id="exampleFormControlInput1" placeholder="Title Of Blog" />
                 </div>
                 <div className="mb-3">
+                    <label htmlFor="exampleFormControlInput1" className="form-label">All Available Tags</label>
+                    <div className="tags_container" style={{display:'flex',gap:'10px'}}>
+                        {
+                            categories.map((element,index)=>{
+                                return <p key={index} onClick={()=>addToSelected(index)} className="tag">{element}</p>
+                            })
+                        }
+                    </div>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="exampleFormControlInput1" className="form-label">Add Tags</label>
+                    <div className="tags_container" style={{display:'flex',gap:'10px'}}>
+                       <TagsInput selected={selected} setselected={setselected} />
+                    </div>
+                </div>
+                <div className="mb-3">
                     <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
-                    <textarea className="form-control" onChange={(e)=>handleInput(e)} name="description"  id="exampleFormControlTextarea1" rows="6" placeholder='Blog Description'></textarea>
+                    <textarea className="form-control textarea" onChange={(e)=>handleInput(e)} name="description"  id="exampleFormControlTextarea1" rows="6" placeholder='Blog Description'></textarea>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="formFile" className="form-label"><span>Image</span></label>

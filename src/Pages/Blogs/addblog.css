@@ -7,3 +7,31 @@
         width: 80%;
     }
 }
+.tag{
+    background-color: dodgerblue;
+    padding: 2px 5px ;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 15px;
+}
+.tags-input li {
+    background-color: dodgerblue;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: #fff;
+    list-style: none;
+    margin-right: 5px;
+}
+.tags-input ul{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* gap: 5px; */
+
+}
+.textarea{
+    height: 250px;
+}
