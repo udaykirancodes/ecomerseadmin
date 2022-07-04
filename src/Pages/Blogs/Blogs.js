@@ -305,7 +305,7 @@ const Blogs = (props) => {
                                             <td>{element.isDeleted ? "Deleted" : "Active"}</td>
                                             <td>
                                                 <i className="fa-solid fa-trash mx-2" role='button' onClick={()=>{setId(element._id)}} data-bs-toggle="modal" data-bs-target="#staticBackdrop">D</i> 
-                                                <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{ setId(element._id)}}>E</i>
+                                                <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{ handleEidt(element._id)}}>E</i>
                                                 {
                                                     element.isDeleted && 
                                                     <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={()=>{ setId(element._id)}}>U</i>
