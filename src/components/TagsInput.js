@@ -37,7 +37,7 @@ export default function TagsInput({selected , setselected}) {
             <input 
             type="text"
             className='form-control'
-            placeholder='Press enter to add tags'
+            placeholder='Enter comma seperated values'
             onKeyUp={e=>(e.key===','?addTags(e) : null)}
             />
         </div>

@@ -19,3 +19,4 @@ export const AcceptOrderUrl = backendurl+'orders/update';
 export const AllSellUrl = backendurl+'sell/getsell';
 export const AllScrapUrl = backendurl+'sell/getscrap';
 export const BlogCategories = backendurl+'blogs/categories';
+export const ProductCategories = backendurl+'products/categories';
