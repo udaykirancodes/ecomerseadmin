@@ -3,8 +3,6 @@ import { useEffect } from 'react';
 
 export default function TagsInput({selected , setselected}) {
 
-    
-
     const removeTags = (indexToRemove) => {
         console.log('Index '+ indexToRemove); 
         let tg = [...selected]; 

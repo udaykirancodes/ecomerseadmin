@@ -20,7 +20,6 @@ const Products = (props) => {
             navigate('/login'); 
         }
         getAllProducts(); 
-        
     },[])
 
     // context 

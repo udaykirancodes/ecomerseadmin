@@ -13,22 +13,29 @@ const AddBlog = (props) => {
 
     const {blogs, setblogs} = useContext(Context)
 
-   
-
+    
+    
     const [blog , setblog ] = useState({
         title:'',
         description : '',
         img : ''
     }) 
-
+    
     const handleInput = (e)=>{
         setblog({...blog , [e.target.name]:e.target.value});
     }
     // add a blog 
-
+    
     const [selectedImage , setSelectedImage] = useState('') ; 
+    
+    const [selected , setselected ] = useState([]);  // categories 
 
     const handleSubmit = () => {
+
+        console.log(typeof(new Array(selected))); 
+        console.log(selected); 
+
+        // return ; 
 
 
         let formdata = new FormData();
@@ -36,7 +43,10 @@ const AddBlog = (props) => {
         formdata.append('title',blog.title)
         formdata.append('description',blog.description); 
         formdata.append('image',selectedImage); 
-        formdata.append('category',selected); 
+        selected.forEach(element => {
+            formdata.append('category',element); 
+        })
+
         let adminToken = localStorage.getItem('adminToken'); 
         if(!adminToken){
             navigate('/login'); 
@@ -69,7 +79,7 @@ const AddBlog = (props) => {
 
     const [categories , setCategories ] = useState([]); 
 
-    const [selected , setselected ] = useState([]);  
+    
 
     useEffect(()=>{
         showAlert('Fetching Categories','success');
