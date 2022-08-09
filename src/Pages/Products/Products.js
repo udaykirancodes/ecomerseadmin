@@ -2,244 +2,271 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Pagination from '../../components/Pagination'
 import Context from '../../context/Context'
-import { GetAllProducts , ProductDeleteUrl ,UndoDeleteProductUrl, EditProductUrl} from '../../urls'
+import { GetAllProducts, ProductDeleteUrl, UndoDeleteProductUrl, EditProductUrl } from '../../urls'
 import './product.css'
 
 const Products = (props) => {
-    const navigate = useNavigate(); 
+    // Image Preiview start 
+    const [selectedImages, setSelectedImages] = useState([]);
+
+    const onSelectFile = (event) => {
+        const selectedFiles = event.target.files;
+        const selectedFilesArray = Array.from(selectedFiles);
+
+        const imagesArray = selectedFilesArray.map((file) => {
+            return URL.createObjectURL(file);
+        });
+
+        setSelectedImages((previousImages) => previousImages.concat(imagesArray));
+
+        // FOR BUG IN CHROME
+        event.target.value = "";
+    };
+
+    function deleteHandler(image) {
+        setSelectedImages(selectedImages.filter((e) => e !== image));
+        URL.revokeObjectURL(image);
+    }
+    const uploadFiles = () => {
+
+    }
+
+    // Image Preiview End 
+    
+    const navigate = useNavigate();
 
     const { showAlert } = props
     const ref = useRef(null)
     const refClose = useRef(null)
 
-    const {getAllProducts} = useContext(Context); 
+    const { getAllProducts } = useContext(Context);
 
-    useEffect(()=>{
-        let adminToken = localStorage.getItem('adminToken'); 
-        if(!adminToken){
-            navigate('/login'); 
-        }
-        getAllProducts(); 
-        
-    },[])
+    // useEffect(()=>{
+    //     let adminToken = localStorage.getItem('adminToken'); 
+    //     if(!adminToken){
+    //         navigate('/login'); 
+    //     }
+    //     getAllProducts(); 
+
+    // },[])
 
     // context 
-    const {products , setproducts}  = useContext(Context); 
+    const { products, setproducts } = useContext(Context);
 
 
     // pagination related codes 
-    const [currentpage , setcurrentpage] = useState(1); 
-    const [perPage , setPerPage] = useState(5); 
-    
-    const indexOfLast  = currentpage * perPage ; 
-    const indexOfFirst = indexOfLast - perPage ;
+    const [currentpage, setcurrentpage] = useState(1);
+    const [perPage, setPerPage] = useState(5);
+
+    const indexOfLast = currentpage * perPage;
+    const indexOfFirst = indexOfLast - perPage;
     // const pageproducts = products.slice(indexOfFirst,indexOfLast); 
     // const [pageproducts , setpageproducts] = useState();
     // setpageproducts(products.slice(indexOfFirst,indexOfLast)); 
-    
+
     // store id 
-    const [id , setId] = useState('');
-    
+    const [id, setId] = useState('');
+
     // function to delete the product 
-    const DeleteProduct = ()=>{
-        console.log('deleting'); 
-        if(!id){
-            showAlert("Cannot Delete",'danger');
-            return ;
+    const DeleteProduct = () => {
+        console.log('deleting');
+        if (!id) {
+            showAlert("Cannot Delete", 'danger');
+            return;
         }
-        console.log('hello'); 
+        console.log('hello');
         // deleting the blog 
-        let adminToken = localStorage.getItem('adminToken'); 
-        if(!adminToken){
-            navigate('/login'); 
+        let adminToken = localStorage.getItem('adminToken');
+        if (!adminToken) {
+            navigate('/login');
         }
-        fetch(ProductDeleteUrl , {
-            method:"PUT",
+        fetch(ProductDeleteUrl, {
+            method: "PUT",
             headers: {
-                'Content-Type':'application/json',
-                'adminToken':adminToken 
+                'Content-Type': 'application/json',
+                'adminToken': adminToken
             },
-            body : JSON.stringify({
-                id : id 
+            body: JSON.stringify({
+                id: id
             })
 
         })
-        .then((res)=> res.json())
-        .then((data)=>{
-            console.log(data); 
-            if(data.success === true){
-                // delete in the frontend
-                let newProducts = products.filter((element)=>{
-                    if(element._id !== id){
-                        return element  
-                    }
-                    else{
-                        element.isDeleted = true ; 
-                        return element 
-                    }
-                })
-                setproducts(newProducts); 
-                setId(''); 
-                showAlert("Deleted Successfully",'success'); 
-            }
-            else{
-                showAlert(data.msg,'danger'); 
-            }
-        })
-        .catch(err=>{
-            console.log(err.message); 
-        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                if (data.success === true) {
+                    // delete in the frontend
+                    let newProducts = products.filter((element) => {
+                        if (element._id !== id) {
+                            return element
+                        }
+                        else {
+                            element.isDeleted = true;
+                            return element
+                        }
+                    })
+                    setproducts(newProducts);
+                    setId('');
+                    showAlert("Deleted Successfully", 'success');
+                }
+                else {
+                    showAlert(data.msg, 'danger');
+                }
+            })
+            .catch(err => {
+                console.log(err.message);
+            })
     }
 
     // handling edit 
-    const [input , setInput] = useState({}); 
-    const handleChange = (e)=>{
-        setInput({...input , [e.target.name]:e.target.value}); 
+    const [input, setInput] = useState({});
+    const handleChange = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
     }
-    const handleEdit = (id)=>{
+    const handleEdit = (id) => {
         console.log('Handle Edit');
-        let product = products.filter(element => element._id === id); 
+        let product = products.filter(element => element._id === id);
         setInput({
-            modelname:product[0].details.modelname,
-            description:product[0].description,
-            name:product[0].name ,
-            price:product[0].price,
-            category:product[0].category
+            modelname: product[0].details.modelname,
+            description: product[0].description,
+            name: product[0].name,
+            price: product[0].price,
+            category: product[0].category
         })
-        setId(id); 
+        setId(id);
     }
 
     // edit product 
-    const EditProduct = ()=>{
-        if(!id){
-            showAlert("Cannot Delete",'danger'); 
-            return ;
+    const EditProduct = () => {
+        if (!id) {
+            showAlert("Cannot Delete", 'danger');
+            return;
         }
         // deleting the blog 
         let adminToken = localStorage.getItem('adminToken');
-        console.log(adminToken) ; 
-        if(!adminToken){
-            navigate('/login'); 
+        console.log(adminToken);
+        if (!adminToken) {
+            navigate('/login');
         }
 
-        console.log("edit 1"); 
-        fetch(EditProductUrl , {
-            method:"PUT",
+        console.log("edit 1");
+        fetch(EditProductUrl, {
+            method: "PUT",
             headers: {
-                'Content-Type':'application/json',
-                'adminToken':adminToken 
+                'Content-Type': 'application/json',
+                'adminToken': adminToken
             },
-            body : JSON.stringify({
-                id : id,
-                name:input.name,
-                description:input.description,
-                modelname:input.modelname,
-                price:input.price ,
-                category:input.category
+            body: JSON.stringify({
+                id: id,
+                name: input.name,
+                description: input.description,
+                modelname: input.modelname,
+                price: input.price,
+                category: input.category
             })
-            
+
         })
-        .then((res)=> res.json())
-        .then((data)=>{
-            if(data.success === true){
-                // edit in the frontend
-                let newProducts = products.filter((element)=>{
-                    if(element._id === id){
-                        let {product} = data ; 
-                        console.log(product); 
-                        if(product.category === 'automobile'){
-                            element.name=product.name 
-                            element.category=product.category
-                            element.description=product.description
-                            element.subCategory=product.subCategory 
-                            element.details={
-                                brand:product.details.brand,
-                                modelname:product.details.modelname,
-                                fuelType:product.details.fuelType
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success === true) {
+                    // edit in the frontend
+                    let newProducts = products.filter((element) => {
+                        if (element._id === id) {
+                            let { product } = data;
+                            console.log(product);
+                            if (product.category === 'automobile') {
+                                element.name = product.name
+                                element.category = product.category
+                                element.description = product.description
+                                element.subCategory = product.subCategory
+                                element.details = {
+                                    brand: product.details.brand,
+                                    modelname: product.details.modelname,
+                                    fuelType: product.details.fuelType
+                                }
+                                element.price = product.price
+                                element.img = product.img
                             }
-                            element.price= product.price
-                            element.img = product.img 
-                        }
-                        else{
-                            element.name=product.name 
-                            element.category=product.category
-                            element.description=product.description
-                            element.subCategory=product.subCategory 
-                            element.details={
-                                brand: product.details.brand,
-                                modelname:product.details.modelname,
-                                metalType:product.details.metalType,     
+                            else {
+                                element.name = product.name
+                                element.category = product.category
+                                element.description = product.description
+                                element.subCategory = product.subCategory
+                                element.details = {
+                                    brand: product.details.brand,
+                                    modelname: product.details.modelname,
+                                    metalType: product.details.metalType,
+                                }
+                                element.price = product.price
+                                element.img = product.img
                             }
-                            element.price= product.price
-                            element.img = product.img 
+                            console.log('After Edited : ', element);
+                            return element
                         }
-                        console.log('After Edited : ',element); 
-                        return element 
-                    }
-                    return element
-                })
-                setproducts(newProducts)
-                setId(''); 
-                showAlert("Edited Successfully",'success'); 
-            }
-            else{
-                showAlert(data.msg,'danger'); 
-            }
-        })
+                        return element
+                    })
+                    setproducts(newProducts)
+                    setId('');
+                    showAlert("Edited Successfully", 'success');
+                }
+                else {
+                    showAlert(data.msg, 'danger');
+                }
+            })
     }
-    
 
-    const UndoDelete = ()=>{
-        if(!id){
-            showAlert("Cannot Delete",'danger');
-            return ;
+
+    const UndoDelete = () => {
+        if (!id) {
+            showAlert("Cannot Delete", 'danger');
+            return;
         }
-        
+
         // deleting the blog 
-        let adminToken = localStorage.getItem('adminToken'); 
-        if(!adminToken){
-            navigate('/login'); 
+        let adminToken = localStorage.getItem('adminToken');
+        if (!adminToken) {
+            navigate('/login');
         }
-        fetch(UndoDeleteProductUrl , {
-            method:"PUT",
+        fetch(UndoDeleteProductUrl, {
+            method: "PUT",
             headers: {
-                'Content-Type':'application/json',
-                'adminToken':adminToken 
+                'Content-Type': 'application/json',
+                'adminToken': adminToken
             },
-            body : JSON.stringify({
-                id : id 
+            body: JSON.stringify({
+                id: id
             })
 
         })
-        .then((res)=> res.json())
-        .then((data)=>{
-            if(data.success === true){
-                // undo delete in the frontend
-                let newProducts = products.filter((element)=>{
-                    if(element._id !== id){
-                        return element  
-                    }
-                    else{
-                        element.isDeleted = false ; 
-                        return element 
-                    }
-                })
-                setproducts(newProducts); 
-                setId(''); 
-                showAlert("Undo Delete Successfully",'success'); 
-            }
-            else{
-                showAlert(data.msg,'danger'); 
-            }
-        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success === true) {
+                    // undo delete in the frontend
+                    let newProducts = products.filter((element) => {
+                        if (element._id !== id) {
+                            return element
+                        }
+                        else {
+                            element.isDeleted = false;
+                            return element
+                        }
+                    })
+                    setproducts(newProducts);
+                    setId('');
+                    showAlert("Undo Delete Successfully", 'success');
+                }
+                else {
+                    showAlert(data.msg, 'danger');
+                }
+            })
     }
 
     // search state
-    const [search , setSearch] = useState('');
+    const [search, setSearch] = useState('');
 
-    if(!products){
+    if (!products) {
         return <>
-        <h1>Loading...</h1>
+            <h1>Loading...</h1>
         </>
     }
 
@@ -251,7 +278,7 @@ const Products = (props) => {
                 Launch demo modal
             </button> */}
 
-             <div className="modal fade" id="modelforedit" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal fade" id="modelforedit" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -262,21 +289,96 @@ const Products = (props) => {
                             <form className="row g-3">
                                 <div className="col-md-6">
                                     <label htmlFor="name" className="form-label">Name of the Product</label>
-                                    <input type="text" name='name' onChange={(e)=>handleChange(e)} value={input.name || ''} className="form-control" id="name" />
+                                    <input type="text" name='name' onChange={(e) => handleChange(e)} value={input.name || ''} className="form-control" id="name" />
                                 </div>
                                 <div className="col-md-6">
                                     <label htmlFor="name" className="form-label">Description of the Product</label>
-                                    <input type="text" name='description' onChange={(e)=>handleChange(e)} value={input.description || ''} className="form-control" id="name" />
+                                    <input type="text" name='description' onChange={(e) => handleChange(e)} value={input.description || ''} className="form-control" id="name" />
+                                </div>
+                                <div className="col-md-6">
+                                    <label htmlFor="name" className="form-label">Short Description</label>
+                                    <input type="text" name='shortdescription' onChange={(e) => handleChange(e)} value={input.description || ''} className="form-control" id="shortdescription" />
                                 </div>
                                 <div className="col-md-6">
                                     <label htmlFor="modelName" className="form-label">Model Name</label>
-                                    <input type="text" name='modelname' onChange={(e)=>handleChange(e)} value={input.modelname || ''} className="form-control" id="modelName" />
+                                    <input type="text" name='modelname' onChange={(e) => handleChange(e)} value={input.modelname || ''} className="form-control" id="modelName" />
                                 </div>
-                                
+
                                 <div className="col-md-2">
                                     <label htmlFor="price" className="form-label">Price</label>
-                                    <input type="text" name='price' onChange={(e)=>handleChange(e)} value={input.price || ''} className="form-control" id="price" />
+                                    <input type="text" name='price' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="price" />
                                 </div>
+                                <div className="col-md-2">
+                                    <label htmlFor="priceRange" className="form-label">Price Range</label>
+                                    <input type="text" name='priceRange' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="priceRange" />
+                                </div>
+                                <div className="col-md-2">
+                                    <label htmlFor="length" className="form-label">Length</label>
+                                    <input type="text" name='length' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="length" />
+                                </div>
+                                <div className="col-md-2">
+                                    <label htmlFor="height" className="form-label">Height</label>
+                                    <input type="text" name='height' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="height" />
+                                </div>
+                                <div className="col-md-2">
+                                    <label htmlFor="width" className="form-label">Width</label>
+                                    <input type="text" name='width' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="width" />
+                                </div>
+                                <div className="col-md-2">
+                                    <label htmlFor="weight" className="form-label">Weight</label>
+                                    <input type="text" name='weight' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="weight" />
+                                </div>
+                                <div className="col-md-2">
+                                    <label htmlFor="color" className="form-label">Color</label>
+                                    <input type="text" name='color' onChange={(e) => handleChange(e)} value={input.price || ''} className="form-control" id="color" />
+                                </div>
+                                <div className="container">
+                        <section className="ImagePreview">
+                            {/* <div className={iPCss.ImageInputContainer}> */}
+                            <label className="ImageLabel">
+                                + Add Images
+                                <br />
+                                <input
+                                    type="file"
+                                    name="images"
+                                    onChange={onSelectFile}
+                                    multiple
+                                    accept="image/png , image/jpeg, image/webp, application/pdf"
+                                    className="ImagePreviewInput"
+                                />
+                            </label>
+                            <br />
+
+                            <input className="ImagePreviewInput" type="file" multiple />
+
+                            {selectedImages.length === 0 ? "" : <div className="images">
+                                {selectedImages &&
+                                    selectedImages.map((image, index) => {
+                                        return (
+                                            <div key={image} className="image">
+                                                <img className="preview" src={image}
+
+                                                    height={200}
+                                                    width={300}
+                                                    alt="upload" />
+                                                <div className="ImgDelete">
+
+                                                    <button className="ImageDelete" onClick={() => deleteHandler(image)}>
+                                                        x
+                                                    </button>
+                                                </div>
+                                                <p className="ImageP">{index + 1}</p>
+                                            </div>
+                                        );
+                                    })}
+                            </div>}
+                            {/* <div className="buttons">
+                                <button className="cancelbtn">Cancel</button>
+                                <button className="savebtn">Save as draft</button>
+                                <button className="submitbtn">Submit</button>
+                            </div> */}
+                        </section>
+                    </div>
                             </form>
                         </div>
                         <div className="modal-footer">
@@ -285,7 +387,7 @@ const Products = (props) => {
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
 
             {/* <!-- Modal for deletion--> */}
             <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -324,12 +426,12 @@ const Products = (props) => {
                 </div>
             </div>
             {/* <div style={{height:'60px'}}></div> */}
-            <div className="customer d-flex"style={{margin:'60px 0 0 0'}}>
+            <div className="customer d-flex" style={{ margin: '60px 0 0 0' }}>
                 <div className="customer_head head">
                     <h4>Products</h4>
                 </div>
                 <div className="customer_head col-md-2">
-                    <input type="text" onChange={(e)=>{ setSearch(e.target.value)}}  className="form-control" id="price" placeholder='Seach With Product Name or Description' />
+                    <input type="text" onChange={(e) => { setSearch(e.target.value) }} className="form-control" id="price" placeholder='Seach With Product Name or Description' />
                 </div>
             </div>
             <div className="product">
@@ -356,67 +458,67 @@ const Products = (props) => {
                         </tr>
                         {
                             // search filter 
-                            search ? 
-                            // with search filter 
-                            products.map((element,index)=>{
-                                let s = search.toLocaleLowerCase();
-                                if(element.name.includes(s) || element.description.includes(s) || element.category.includes(s) || element.subCategory.includes(s)){
-                                return <tbody key={index}>
+                            search ?
+                                // with search filter 
+                                products.map((element, index) => {
+                                    let s = search.toLocaleLowerCase();
+                                    if (element.name.includes(s) || element.description.includes(s) || element.category.includes(s) || element.subCategory.includes(s)) {
+                                        return <tbody key={index}>
 
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{element.name}</td>
-                                    <td>{element.category}</td>
-                                    <td>{element.subCategory.map((s)=> {return s })}</td>
-                                    <td>{element.description}</td>
-                                    <td>{element.details.modelname || ''}</td>
-                                    <td>{element.details.brand}</td>
-                                    <td>{element.price}</td>
-                                    <td>{element.isDeleted ? "Out of Stock" : "In Stock"}</td>
-                                    <td>
-                                        <i className="fa-solid fa-trash mx-2" role='button' data-bs-toggle="modal" data-bs-target="#staticBackdrop" onClick={()=>setId(element._id)}>D</i> 
-                                        <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforedit" onClick={()=>handleEdit(element._id)}>E</i> 
-                                        {
-                                            element.isDeleted && 
-                                            <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={()=>setId(element._id)}>U</i> 
-                                        }
-                                    </td>
-                                </tr>
-                                </tbody>
-                                }
-                            })
-                            : // without any search filter 
-                            products.map((element,index)=>{
-                                if(index >= indexOfFirst && index<indexOfLast){
-                                return <tbody key={index}>
-                                <tr key={index}>
-                                <td>{index+1}</td>
-                                <td>{element.name}</td>
-                                <td>{element.category}</td>
-                                <td>{element.subCategory}</td>
-                                <td>{element.description}</td>
-                                <td>{element.details.modelname ? element.details.modelname : ''}</td>
-                                <td>{element.details.brand}</td>
-                                <td>{element.price}</td>
-                                <td>{element.isDeleted ? "Out of Stock" : "In Stock"}</td>
-                                <td>
-                                    <i className="fa-solid fa-trash mx-2" role='button' data-bs-toggle="modal" data-bs-target="#staticBackdrop" onClick={()=>setId(element._id)}>D</i> 
-                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforedit" onClick={()=>handleEdit(element._id)}>E</i> 
-                                </td>
-                                {
-                                    element.isDeleted && 
-                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={()=>setId(element._id)}>U</i> 
-                                }
-                            </tr>
-                                </tbody>
-                                }
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{element.name}</td>
+                                                <td>{element.category}</td>
+                                                <td>{element.subCategory.map((s) => { return s })}</td>
+                                                <td>{element.description}</td>
+                                                <td>{element.details.modelname || ''}</td>
+                                                <td>{element.details.brand}</td>
+                                                <td>{element.price}</td>
+                                                <td>{element.isDeleted ? "Out of Stock" : "In Stock"}</td>
+                                                <td>
+                                                    <i className="fa-solid fa-trash mx-2" role='button' data-bs-toggle="modal" data-bs-target="#staticBackdrop" onClick={() => setId(element._id)}>D</i>
+                                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforedit" onClick={() => handleEdit(element._id)}>E</i>
+                                                    {
+                                                        element.isDeleted &&
+                                                        <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={() => setId(element._id)}>U</i>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                })
+                                : // without any search filter 
+                                products.map((element, index) => {
+                                    if (index >= indexOfFirst && index < indexOfLast) {
+                                        return <tbody key={index}>
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{element.name}</td>
+                                                <td>{element.category}</td>
+                                                <td>{element.subCategory}</td>
+                                                <td>{element.description}</td>
+                                                <td>{element.details.modelname ? element.details.modelname : ''}</td>
+                                                <td>{element.details.brand}</td>
+                                                <td>{element.price}</td>
+                                                <td>{element.isDeleted ? "Out of Stock" : "In Stock"}</td>
+                                                <td>
+                                                    <i className="fa-solid fa-trash mx-2" role='button' data-bs-toggle="modal" data-bs-target="#staticBackdrop" onClick={() => setId(element._id)}>D</i>
+                                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforedit" onClick={() => handleEdit(element._id)}>E</i>
+                                                </td>
+                                                {
+                                                    element.isDeleted &&
+                                                    <i className="fa-solid fa-file-pen mx-2" role='button' data-bs-toggle="modal" data-bs-target="#modelforundo" onClick={() => setId(element._id)}>U</i>
+                                                }
+                                            </tr>
+                                        </tbody>
+                                    }
 
-                            })
+                                })
                         }
                     </table>
                 </div>
             </div>
-            <Pagination currentproducts={products.length/perPage} currentpage={currentpage} setcurrentpage={setcurrentpage}   /> 
+            <Pagination currentproducts={products.length / perPage} currentpage={currentpage} setcurrentpage={setcurrentpage} />
         </>
     )
 }
