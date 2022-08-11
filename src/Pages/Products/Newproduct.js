@@ -9,6 +9,9 @@ import ImagePreview from '../../components/ImagePreview';
 
 const Newproduct = (props) => {
 
+    //Setting label for table input
+    const [label, setLabel] = useState([])
+
     // Image Preiview start 
     const [selectedImages, setSelectedImages] = useState([]);
 
@@ -74,15 +77,29 @@ const Newproduct = (props) => {
     }
     // subcategories
     const options = {
-        automobile: [
-            { value: 'car', label: 'Car' },
-            { value: 'bike', label: 'Bike' },
-            { value: 'jcb', label: 'JCB' },
-            { value: 'lorry', label: 'Lorry' },
+        auluminium: [
+            { value: 'rod', label: 'Aluminium Rod' },
+            { value: 'pipe', label: 'Aluminum Pipe' },
+            { value: 'wire', label: 'Aluminium Wire' },
+            { value: 'bar', label: 'Aluminium Bar' },
         ],
-        metal: [
-            { value: 'steel', label: 'Steel' },
-            { value: 'steel', label: 'Steel' },
+        steel: [
+            { value: 'rod', label: 'Steel Rod' },
+            { value: 'pipe', label: 'Steel Pipe' },
+            { value: 'wire', label: 'Steel Wire' },
+            { value: 'bar', label: 'Steel Bar' },
+        ],
+        copper: [
+            { value: 'rod', label: 'Steel Rod' },
+            { value: 'pipe', label: 'Steel Pipe' },
+            { value: 'wire', label: 'Steel Wire' },
+            { value: 'bar', label: 'Steel Bar' },
+        ],
+        autoparts: [
+            { value: 'rod', label: 'Steel Rod' },
+            { value: 'pipe', label: 'Steel Pipe' },
+            { value: 'wire', label: 'Steel Wire' },
+            { value: 'bar', label: 'Steel Bar' }
         ]
     }
 
@@ -100,6 +117,7 @@ const Newproduct = (props) => {
 
 
     const [input, setInput] = useState({});
+    const [input2, setInput2] = useState({});
     // const [images , setSelectedImages ] = useState(); 
 
     const handleInput = (e) => {
@@ -177,20 +195,50 @@ const Newproduct = (props) => {
     const [serviceList, setServiceList] = useState([{ service: "" }]);
 
     const handleServiceChange = (e, index) => {
-      const { name, value } = e.target;
-      const list = [...serviceList];
-      list[index][name] = value;
-      setServiceList(list);
+        const { name, value } = e.target;
+        setInput({ ...input, [e.target.name]: e.target.value })
+        const list = [...serviceList];
+        list[index][name] = value;
+        setServiceList(list);
     };
-  
+
     const handleServiceRemove = (index) => {
-      const list = [...serviceList];
-      list.splice(index, 1);
-      setServiceList(list);
+        const list = [...serviceList];
+        list.splice(index, 1);
+        setServiceList(list);
     };
-  
+
     const handleServiceAdd = () => {
-      setServiceList([...serviceList, { service: "" }]);
+        setServiceList([...serviceList, { service: "" }]);
+        setLabel(input.service);
+    };
+
+
+
+
+
+
+
+
+    const [serviceList2, setServiceList2] = useState([{ service2: "" }]);
+
+    const handleServiceChange2 = (e, index) => {
+        const { name, value } = e.target;
+        setInput2({ ...input, [e.target.name]: e.target.value })
+        const list = [...serviceList2];
+        list[index][name] = value;
+        setServiceList2(list);
+    };
+
+    const handleServiceRemove2 = (index) => {
+        const list = [...serviceList2];
+        list.splice(index, 1);
+        setServiceList2(list);
+    };
+
+    const handleServiceAdd2 = () => {
+        setServiceList2([...serviceList2, { service: "" }]);
+        // setLabel(input.service);
     };
     return (
         <>
@@ -222,8 +270,10 @@ const Newproduct = (props) => {
                         <label htmlFor="subCategory" className="form-label">Category</label>
                         <select id="subCategory" className="form-select" name='category' onChange={(e) => handleInput(e)}>
                             <option value="">Choose...</option>
-                            <option value="automobile">Auto Mobile</option>
-                            <option value="metal">Metal</option>
+                            <option value="stell">Stell</option>
+                            <option value="aluminium">Aluminium</option>
+                            <option value="copper">Copper</option>
+                            <option value="autoparts">Autoparts</option>
                         </select>
                     </div>
                     <div className="col-md-4">
@@ -273,7 +323,8 @@ const Newproduct = (props) => {
                         <Select isMulti={true}
                             value={selectedOption}
                             onChange={handleChange}
-                            options={input.category === "automobile" ? options.automobile : options.metal} id="category" className="form-select">
+                            // options={options.input.category} id="category" className="form-select">
+                            options={input.category === "auluminium" ? options.auluminium : options.steel} id="category" className="form-select">
                         </Select>
                     </div>
                     <div className="col-md-4">
@@ -304,15 +355,31 @@ const Newproduct = (props) => {
                         <label htmlFor="weight" className="form-label">Weight</label>
                         <input type="text" name='weight' onChange={(e) => handleInput(e)} className="form-control" id="weight" />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-2">
                         <label htmlFor="color" className="form-label">Color</label>
                         <input type="text" name='color' onChange={(e) => handleInput(e)} className="form-control" id="color" />
+                    </div>
+                    <div className="col-md-2">
+                        <label htmlFor="feature" className="form-label">Feature Product</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                No
+                            </label>
+                        </div>
                     </div>
                     <div className="col-md-4">
                         <label htmlFor="service">Table Input(s)</label>
                         {serviceList.map((singleService, index) => (
                             <div key={index} className="services">
                                 <div className="first-division">
+                                    {/* <label htmlFor="tabel" className="form-label">{input.service}</label> */}
                                     <input
                                         className='form-control'
                                         name="service"
@@ -320,6 +387,17 @@ const Newproduct = (props) => {
                                         id="service"
                                         value={singleService.service}
                                         onChange={(e) => handleServiceChange(e, index)}
+                                        placeholder='table Header'
+                                        required
+                                    />
+                                    <input
+                                        className='form-control'
+                                        name="service2"
+                                        type="text"
+                                        id="service2"
+                                        value={singleService.service2}
+                                        onChange={(e) => handleServiceChange2(e, index)}
+                                        placeholder='table Content'
                                         required
                                     />
                                     {serviceList.length - 1 === index && serviceList.length < 10 && (
